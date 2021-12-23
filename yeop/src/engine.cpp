@@ -1,4 +1,7 @@
 #include "SDL2/SDL.h"
+
+#include "input/keyboard.h"
+#include "input/mouse.h"
 #include "engine.h"
 #include "log.h"
 
@@ -24,6 +27,18 @@ namespace yeop
       while(mIsRunning)
       {
         mWindow.HandleEvents();
+
+        // input::MOUSE debug position and clicks
+        // YEOP_TRACE("X: {} Y: {}, {}{}{}", input::Mouse::X(), input::Mouse::Y(), 
+        //   input::Mouse::Button(YEOP_INPUT_MOUSE_LEFT), 
+        //   input::Mouse::Button(YEOP_INPUT_MOUSE_MIDDLE), 
+        //   input::Mouse::Button(YEOP_INPUT_MOUSE_RIGHT));
+
+        // keyboard::Key debug
+        // if (input::Keyboard::Key(YEOP_INPUT_KEY_R))
+        // {
+        //   YEOP_TRACE("Button Pressed: {}", "R");
+        // }
 
         mWindow.StartRender();
         mWindow.EndRender();
@@ -57,6 +72,10 @@ namespace yeop
           ret = true;
           mIsRunning = true;
           mIsInitialized= true;
+
+          // Initialize Input
+          input::Mouse::Init();
+          input::Keyboard::Init();
         } 
       }
     }

@@ -3,6 +3,8 @@
 #include "log.h"
 #include "engine.h"
 #include "core/window.h"
+#include "input/mouse.h"
+#include "input/keyboard.h"
 
 
 namespace yeop::core
@@ -61,6 +63,9 @@ namespace yeop::core
         break;
       }
     }
+
+    input::Mouse::Update();
+    input::Keyboard::Update();
   }
 
   void Window::StartRender()
@@ -76,6 +81,8 @@ namespace yeop::core
   void Window::Destroy()
   {
     SDL_DestroyWindow(mWindow);
+    SDL_DestroyRenderer(mRenderer);
     mWindow = nullptr;
+    mRenderer = nullptr;
   }
 }

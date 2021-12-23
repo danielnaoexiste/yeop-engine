@@ -1,6 +1,7 @@
 #pragma once
 
 struct SDL_Window;
+struct SDL_Renderer;
 using SDL_GLContext = void*;
 namespace yeop::core
 {
