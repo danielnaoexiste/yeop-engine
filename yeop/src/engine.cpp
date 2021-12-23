@@ -3,10 +3,10 @@
 #include "input/keyboard.h"
 #include "input/joystick.h"
 #include "input/mouse.h"
-#include "engine.h"
+#include "engine.h" 
 #include "log.h"
 
-namespace yeop 
+namespace yeop
 {
   // public
   Engine& Engine::Instance()
@@ -21,28 +21,21 @@ namespace yeop
 
 
   // private
-  void Engine::Run() 
+  void Engine::Run(App* app) 
   {
+    mLogManager.Init();
+    
+    YEOP_ASSERT(!mApp, "Attempting to call Engine::Run() when a valid App already exists!");
+    if (mApp) return;
+
+    mApp = app;
+
     if (Init()) 
     {
       while(mIsRunning)
       {
-        mWindow.HandleEvents();
-
-        // input::MOUSE debug position and clicks
-        // YEOP_TRACE("X: {} Y: {}, {}{}{}", input::Mouse::X(), input::Mouse::Y(), 
-        //   input::Mouse::Button(YEOP_INPUT_MOUSE_LEFT), 
-        //   input::Mouse::Button(YEOP_INPUT_MOUSE_MIDDLE), 
-        //   input::Mouse::Button(YEOP_INPUT_MOUSE_RIGHT));
-
-        // keyboard::Key debug
-        // if (input::Keyboard::Key(YEOP_INPUT_KEY_R))
-        // {
-        //   YEOP_TRACE("Button Pressed: {}", "R");
-        // }
-
-        mWindow.StartRender();
-        mWindow.EndRender();
+        Update();
+        Render();
       }
 
       Clean();
@@ -56,10 +49,7 @@ namespace yeop
 
     if (!mIsInitialized)
     {
-      mLogManager.Init();
-      
-      GetInfo();
-      
+      GetInfo();      
       if(SDL_Init(SDL_INIT_EVERYTHING) < 0) 
       {
         YEOP_ERROR("SDL failed to init: {}", SDL_GetError()); 
@@ -76,9 +66,12 @@ namespace yeop
           mIsRunning = true;
           mIsInitialized= true;
 
-          // Initialize Input
+          // Init Input
           input::Mouse::Init();
           input::Keyboard::Init();
+
+          // Init Client
+          mApp->Init();
         } 
       }
     }
@@ -96,7 +89,8 @@ namespace yeop
   {
     mIsRunning = false;
     mIsInitialized = false;
-    
+    mApp->Clean();
+
     //managers
     YEOP_ERROR("Yeop cleaned... See you next time!");
     mLogManager.Clean();
@@ -107,6 +101,19 @@ namespace yeop
     SDL_Quit();
     
     return;
+  }
+
+  void Engine::Update()
+  {
+    mWindow.HandleEvents();
+    mApp->Update();
+  }
+
+  void Engine::Render()
+  {
+    mWindow.StartRender();
+		mApp->Render();
+		mWindow.EndRender();
   }
   
   void Engine::GetInfo() 
@@ -140,6 +147,7 @@ namespace yeop
 
   Engine::Engine() 
     : mIsRunning(false),
-    mIsInitialized(false) 
+      mIsInitialized(false),
+      mApp(nullptr) 
   {}
 }

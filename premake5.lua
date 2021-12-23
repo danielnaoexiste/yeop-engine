@@ -93,8 +93,9 @@ project "yeop-editor"
 
   sysincludedirs
   {
+    "SDL2",
     "yeop/include",
-    "SDL2"
+    "%{externals.spdlog}/include",
   }
 
   flags {"FatalWarnings"}

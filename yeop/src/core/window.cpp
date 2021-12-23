@@ -10,7 +10,7 @@
 
 namespace yeop::core
 {
-  Window::Window() : mWindow(nullptr) {}
+  Window::Window() : mWindow(nullptr), mRenderer(nullptr) {}
   Window::~Window()
 
   {
