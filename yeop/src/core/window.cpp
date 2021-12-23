@@ -38,7 +38,7 @@ namespace yeop::core
     }
     else
     {
-      SDL_SetRenderDrawColor(mRenderer, 40, 45, 52, 255);
+      SDL_SetRenderDrawColor(mRenderer, 64, 95, 237, 255);
       YEOP_DEBUG("Renderer created...");
     }
 
