@@ -19,7 +19,7 @@
 #define YEOP_WARN(...)	if (spdlog::get(YEOP_DEFAULT_LOGGER_NAME) != nullptr) {spdlog::get(YEOP_DEFAULT_LOGGER_NAME)->warn(__VA_ARGS__);}
 #define YEOP_ERROR(...)	if (spdlog::get(YEOP_DEFAULT_LOGGER_NAME) != nullptr) {spdlog::get(YEOP_DEFAULT_LOGGER_NAME)->error(__VA_ARGS__);}
 #define YEOP_FATAL(...)	if (spdlog::get(YEOP_DEFAULT_LOGGER_NAME) != nullptr) {spdlog::get(YEOP_DEFAULT_LOGGER_NAME)->critical(__VA_ARGS__);}
-#define YEOP_ASSERT(x, msg) if ((x)) {} else { YEOP_FATAL("ASSERT - {}\n\t{}\n\tin file: {} && on line: {}", #x, msg, __FILE__, __LINE__); YEOP_BREAK }
+#define YEOP_ASSERT(x, msg) if ((x)) {} else { YEOP_FATAL("FATAL ERROR \n\tASSERT - {}\n\t{}\n\tin file: {} on line: {}", #x, msg, __FILE__, __LINE__); YEOP_BREAK }
 #else
 #define YEOP_TRACE(...)     (void)0
 #define YEOP_DEBUG(...)	    (void)0

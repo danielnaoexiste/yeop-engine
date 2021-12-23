@@ -1,6 +1,7 @@
 #include "SDL2/SDL.h"
 
 #include "input/keyboard.h"
+#include "input/joystick.h"
 #include "input/mouse.h"
 #include "engine.h"
 #include "log.h"
@@ -56,7 +57,9 @@ namespace yeop
     if (!mIsInitialized)
     {
       mLogManager.Init();
+      
       GetInfo();
+      
       if(SDL_Init(SDL_INIT_EVERYTHING) < 0) 
       {
         YEOP_ERROR("SDL failed to init: {}", SDL_GetError()); 
@@ -97,6 +100,7 @@ namespace yeop
     //managers
     YEOP_ERROR("Yeop cleaned... See you next time!");
     mLogManager.Clean();
+		input::Joystick::Clean();
 
     // Shutdown SDL
     mWindow.Destroy();

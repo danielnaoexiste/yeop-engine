@@ -5,6 +5,7 @@
 #include "core/window.h"
 #include "input/mouse.h"
 #include "input/keyboard.h"
+#include "input/joystick.h"
 
 
 namespace yeop::core
@@ -40,7 +41,7 @@ namespace yeop::core
     }
     else
     {
-      SDL_SetRenderDrawColor(mRenderer, 64, 95, 237, 255);
+      SDL_SetRenderDrawColor(mRenderer, 40, 45, 52, 255);
       YEOP_DEBUG("Renderer created...");
     }
 
@@ -59,6 +60,14 @@ namespace yeop::core
         Engine::Instance().Quit();
         break;
       
+      case SDL_CONTROLLERDEVICEADDED:
+        input::Joystick::OnJoystickConnected(e.cdevice);
+        break;
+      
+      case SDL_CONTROLLERDEVICEREMOVED:
+        input::Joystick::OnJoystickDisconnected(e.cdevice);
+        break;
+      
       default:
         break;
       }
@@ -66,6 +75,7 @@ namespace yeop::core
 
     input::Mouse::Update();
     input::Keyboard::Update();
+    input::Joystick::Update();
   }
 
   void Window::StartRender()

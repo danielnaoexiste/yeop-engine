@@ -2,6 +2,7 @@
 
 #include <array>
 
+// Adapted from progrematic/hippo.git
 namespace yeop::input
 {
   class Keyboard 
