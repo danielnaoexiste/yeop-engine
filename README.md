@@ -6,8 +6,14 @@ YEOP is a work in progress 2D game engine and editor written in C++/SDL2, inspir
   - [Dear ImGui](https://github.com/ocornut/imgui)
   - [spdlog](https://github.com/gabime/spdlog)
 
-# Features
 
+# How to Run
+Generate and Build the solution, then run, using the provided CLI.
+
+```bash
+./cli.sh gensln buildsln run
+```
+# Features
 ## Yeop Engine
 - [x] Game Loop
 - [x] Window Management
