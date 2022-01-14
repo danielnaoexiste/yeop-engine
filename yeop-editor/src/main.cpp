@@ -8,10 +8,20 @@
 #include "yeop/input/keyboard.h"
 #include "yeop/input/joystick.h"
 
+#include "external/imgui/imgui.h"
+
 using namespace yeop;
 class Editor : public App
 {
   public:
+    core::WindowProperties GetWindowProperties() 
+    {
+      core::WindowProperties props;
+      props.title = "Yeop Game Editor";
+      props.imguiProps.isViewportEnabled = true;
+      return props;
+    }
+
     void Init() override
     {
       YEOP_TRACE("Editor::Init();")
@@ -24,27 +34,28 @@ class Editor : public App
 
     void Update() override
     {
-      YEOP_TRACE("Editor::Update();")
-      // input::MOUSE debug position and clicks
-      // YEOP_TRACE("X: {} Y: {}, {}{}{}", input::Mouse::X(), input::Mouse::Y(), 
-      //   input::Mouse::Button(YEOP_INPUT_MOUSE_LEFT), 
-      //   input::Mouse::Button(YEOP_INPUT_MOUSE_MIDDLE), 
-      //   input::Mouse::Button(YEOP_INPUT_MOUSE_RIGHT));
 
-      // keyboard::Key debug
-      if (input::Keyboard::Key(YEOP_INPUT_KEY_R))
-      {
-        YEOP_TRACE("Button Pressed: {}", "R");
-      }
     }
 
     void Render() override
     {
-      YEOP_TRACE("Editor::Render();")
+
+    }
+
+    void GuiRender() override 
+    {
+      if(ImGui::Begin("Inspector"))
+      {
+        ImGui::Text("Transform");
+        ImGui::DragInt2("Position", &xPos);
+        ImGui::DragInt2("Scale", &xScale, 1, 0, 10);
+      }
+      ImGui::End();
     }
 
   private:
-
+    int xPos, yPos = 0;
+    int xScale, yScale = 0;
 };
 
 App* CreateApp()

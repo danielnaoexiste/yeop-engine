@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "yeop/app.h"
-#include "yeop/engine.h"
+#include "app.h"
+#include "engine.h"
 
 yeop::App* CreateApp();
 

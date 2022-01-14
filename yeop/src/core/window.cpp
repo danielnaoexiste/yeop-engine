@@ -1,16 +1,34 @@
 #include "SDL2/SDL.h"
+#include "glad/glad.h"
 
 #include "log.h"
 #include "engine.h"
+
 #include "core/window.h"
 #include "input/mouse.h"
 #include "input/keyboard.h"
 #include "input/joystick.h"
 
-
 namespace yeop::core
 {
-  Window::Window() : mWindow(nullptr), mRenderer(nullptr) {}
+  WindowProperties::WindowProperties()
+	{
+		title = "Yeop Engine";
+		x = SDL_WINDOWPOS_CENTERED;
+		y = SDL_WINDOWPOS_CENTERED;
+		w = 1280;
+		h = 720;
+		wMin = 320;
+		hMin = 180;
+		flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+		colorRed = static_cast<float>(0x40) / static_cast<float>(0xFF);
+		colorGreen = static_cast<float>(0x45) / static_cast<float>(0xFF);
+		colorBlue =	static_cast<float>(0x52) / static_cast<float>(0xFF);
+	}
+
+  
+
+  Window::Window() : mWindow(nullptr) {}
   Window::~Window()
 
   {
@@ -20,9 +38,11 @@ namespace yeop::core
     }
   }
 
-  bool Window::Create()
+  bool Window::Create(const WindowProperties& props)
   {
-    mWindow = SDL_CreateWindow("YEOP!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    YEOP_INFO("title: {}\n\tx: {}/{}\n\ty: {}/{}\n\tw: {}\n\th: {}\n\tf: {}",
+    props.title.c_str(), props.x, SDL_WINDOWPOS_CENTERED, props.y, SDL_WINDOWPOS_CENTERED, props.w, props.h, props.flags);
+    mWindow = SDL_CreateWindow(props.title.c_str(), props.x, props.y, props.w, props.h, props.flags);
    
     if (!mWindow) 
     {
@@ -32,19 +52,32 @@ namespace yeop::core
 
     YEOP_DEBUG("Window created...");
     
-    mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-   
-    if (!mRenderer) 
-    {
-      YEOP_FATAL("Renderer failed to create: {}", SDL_GetError()); 
-      return false;
-    }
-    else
-    {
-      SDL_SetRenderDrawColor(mRenderer, 40, 45, 52, 255);
-      YEOP_DEBUG("Renderer created...");
-    }
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
+    SDL_SetWindowMinimumSize(mWindow, props.wMin, props.hMin);
+
+    mGLContext = SDL_GL_CreateContext(mWindow);
+    if (mGLContext == nullptr)
+		{
+			YEOP_FATAL("Error creating OpenGL context: {}", SDL_GetError());
+			return false;
+		}
+
+		gladLoadGLLoader(SDL_GL_GetProcAddress);
+    YEOP_DEBUG("OpenGL Context created...");
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glClearColor(props.colorRed, props.colorGreen, props.colorBlue, 1);
+    
+    mImguiWindow.Create(props.imguiProps);
 
     return true;
   }
@@ -73,26 +106,30 @@ namespace yeop::core
       }
     }
 
-    input::Mouse::Update();
-    input::Keyboard::Update();
+    // Update Input
+    if(!mImguiWindow.WantCaptureMouse()) { input::Mouse::Update(); }
+    if(!mImguiWindow.WantCaptureKeyboard()) { input::Keyboard::Update(); }
     input::Joystick::Update();
   }
 
   void Window::StartRender()
   {
-    SDL_RenderClear(mRenderer);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 
   void Window::EndRender()
   {
-    SDL_RenderPresent(mRenderer);
+    mImguiWindow.StartRender();
+    Engine::Instance().GetApp().GuiRender();
+    mImguiWindow.EndRender();
+    
+    SDL_GL_SwapWindow(mWindow);
   }
 
   void Window::Destroy()
   {
     SDL_DestroyWindow(mWindow);
-    SDL_DestroyRenderer(mRenderer);
+    SDL_GL_DeleteContext(mGLContext);  
     mWindow = nullptr;
-    mRenderer = nullptr;
   }
 }

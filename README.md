@@ -1,8 +1,9 @@
 # YEOP Engine
-YEOP is a work in progress 2D game engine and editor written in C++/SDL2, inspired by [Hippo](https://github.com/progrematic/hippo).
+YEOP is a work in progress 2D game engine and editor written in C++/SDL2, inspired by [Hippo](https://github.com/progrematic/hippo) and [Hazel](https://github.com/TheCherno/Hazel).
 
 # Libs
   - [SDL2](https://www.libsdl.org/) 
+  - [Dear ImGui](https://github.com/ocornut/imgui)
   - [spdlog](https://github.com/gabime/spdlog)
 
 # Features
@@ -23,9 +24,8 @@ YEOP is a work in progress 2D game engine and editor written in C++/SDL2, inspir
 - [ ] Audio
 - [ ] Entity Component System
 - [ ] Lua Embed
-
-## Yeop Editor
-- [ ] Dear IMGui Implementation
+- [x] Dear IMGui Implementation
+- [ ] ImGui Windows
   - [ ] Console
   - [ ] Inspector
   - [ ] Game View

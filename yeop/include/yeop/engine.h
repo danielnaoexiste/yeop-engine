@@ -16,6 +16,9 @@ namespace yeop
       void Run(App* app);
       inline void Quit() { mIsRunning = false; }
 
+      inline App& GetApp() { return *mApp; }
+      inline core::Window& GetWindow() { return mWindow; }
+      
     private:
       void GetInfo();
       bool Init();
@@ -27,6 +30,7 @@ namespace yeop
       App* mApp;
       bool mIsRunning;
       bool mIsInitialized;
+
       core::Window mWindow;
 
       //Managers

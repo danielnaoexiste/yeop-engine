@@ -16,6 +16,10 @@ externals = {}
 externals["sdl2"] = "external/SDL2"
 externals["maclibs"] = "external/maclibs"
 externals["spdlog"] = "external/spdlog"
+externals["glad"] = "external/glad"
+
+-- Process Glad
+include "external/glad"
 
 project "yeop"
   location "yeop"
@@ -33,17 +37,23 @@ project "yeop"
     "%{prj.name}/include/**.hpp",
     "%{prj.name}/include/**.cpp",
     "%{prj.name}/src/**.h",
-    "%{prj.name}/src/**.cpp"
+    "%{prj.name}/src/**.cpp",
+    "%{prj.name}/**.natvis"
   }
 
   sysincludedirs
   {
     "%{prj.name}/include/yeop",
+    "%{prj.name}/include/external",
     "%{externals.sdl2}/include",
-    "%{externals.spdlog}/include"
+    "%{externals.spdlog}/include",
+    "%{externals.glad}/include"
   }
 
   flags {"FatalWarnings"}
+  
+  -- No GLFW
+  defines {"GLFW_INCLUDE_NONE"}
 
   filter {"system:windows", "configurations:*"}
     systemversion "latest"
@@ -93,7 +103,6 @@ project "yeop-editor"
 
   sysincludedirs
   {
-    "SDL2",
     "yeop/include",
     "%{externals.spdlog}/include",
   }
@@ -109,7 +118,8 @@ project "yeop-editor"
 
     links
     {
-      "SDL2"
+      "SDL2",
+      "glad"
     }
 
   filter {"system:macosx", "configurations:*"}
@@ -126,7 +136,8 @@ project "yeop-editor"
     
     links
     {
-      "SDL2.framework"
+      "SDL2.framework",
+      "glad"
     }
 
   filter {"system:linux", "configurations:*"}
@@ -134,7 +145,9 @@ project "yeop-editor"
 
     links
     {
-      "SDL2"
+      "SDL2",
+      "glad",
+      "dl"
     }
     
   filter {"configurations:Debug"}

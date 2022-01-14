@@ -3,7 +3,9 @@
 #include "input/keyboard.h"
 #include "input/joystick.h"
 #include "input/mouse.h"
+
 #include "engine.h" 
+#include "app.h"
 #include "log.h"
 
 namespace yeop
@@ -60,7 +62,9 @@ namespace yeop
         SDL_VERSION(&version);
         YEOP_INFO("Initialized: SDL {}.{}.{}", (int32_t) version.major, (int32_t) version.minor, (int32_t) version.patch);
 
-        if(mWindow.Create())
+        core::WindowProperties props = mApp->GetWindowProperties();
+        
+        if(mWindow.Create(props))
         {
           ret = true;
           mIsRunning = true;
@@ -94,9 +98,9 @@ namespace yeop
     //managers
     YEOP_ERROR("Yeop cleaned... See you next time!");
     mLogManager.Clean();
-		input::Joystick::Clean();
 
     // Shutdown SDL
+		input::Joystick::Clean();
     mWindow.Destroy();
     SDL_Quit();
     
