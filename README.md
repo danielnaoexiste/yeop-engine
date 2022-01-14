@@ -14,7 +14,6 @@ Generate and Build the solution, then run, using the provided CLI.
 ./cli.sh gensln buildsln run
 ```
 # Features
-## Yeop Engine
 - [x] Game Loop
 - [x] Window Management
 - [x] Logging Tool (adapted from Hippo)
